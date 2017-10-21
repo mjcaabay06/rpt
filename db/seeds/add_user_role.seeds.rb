@@ -1,0 +1,3 @@
+UserRole.create!([
+	{ description: 'Admin' }
+])
