@@ -15,3 +15,17 @@
 //= require_tree .
 //= require jquery
 //= require bootstrap-sprockets
+
+function keyNumber(identifier){
+	$(identifier).keydown(function(e){
+		if (!((e.keyCode >= 48 && e.keyCode <= 57) || e.keyCode == 8 || e.keyCode == 190)) {
+			e.preventDefault();
+		}
+
+		if (e.keyCode == 190) {
+			if (this.value.split('.').length === 2) {
+				e.preventDefault();
+			}
+		}
+	});
+}

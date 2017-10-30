@@ -1,3 +1,3 @@
 UserRole.create!([
-	{ description: 'Admin' }
+	{ description: 'Collector' }
 ])

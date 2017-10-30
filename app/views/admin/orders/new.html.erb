@@ -1,0 +1,117 @@
+<% content_for :header do %>
+	<script type="text/javascript" src="/assets/bootstrap-datepicker.js"></script>
+	<link rel="stylesheet" type="text/css" href="/assets/bootstrap-datepicker.css">
+<% end %>
+<style type="text/css">
+	.item-delete{
+		border: 0;
+		background-color: transparent;
+		padding: 0;
+	}
+</style>
+<div class="col-md-10 col-md-offset-1">
+	<div class="row">
+		<form>
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h4>Orders</h4>
+				</div>
+				<div class="panel-body">
+					
+					<div class="form-group">
+						<div class="row">
+							<div class="col-xs-8">
+								<input type="text" name="name" class="form-control" placeholder="Name" />
+							</div>
+							<div class="col-xs-4">
+								<input type="text" name="date" id="order-date" class="form-control" placeholder="Date" />
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<button type="button" class="btn btn-primary form-control" id="btn-add-item">Add Item Field</button>
+					</div>
+					<div id="items">
+						<div class="form-group item">
+							<div class="row">
+								<div class="col-xs-7" style="padding-right: 0;">
+									<input name="item-name" class="form-control" placeholder="Item" type="text">
+								</div>
+								<div class="col-xs-4">
+									<input name="qty" class="form-control" placeholder="Qty" type="text">
+								</div>
+							</div>
+						</div>
+					</div>
+					
+				</div>
+				<div class="panel-footer">
+					<button type="button" id="btn-submit" class="btn btn-primary form-control">SUBMIT</button>
+				</div>
+		</div>
+		</form>
+	</div>
+</div>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		keyNumber("input[name=qty]");
+		
+		$("#order-date").datepicker({
+			autoclose: true,
+			todayHighlight: true
+		});
+
+		$("#btn-add-item").on("click", function(){
+			var html = '';
+			var cnt = $(".item-delete").length;
+			
+			html = '<div class="form-group item" id="item-' + (cnt + 1) + '">'
+				+	'<div class="row">'
+				+	'<div class="col-xs-7" style="padding-right: 0;"><input name="item-name" class="form-control" placeholder="Item" type="text"></div>'
+				+	'<div class="col-xs-4"><input name="qty" class="form-control" placeholder="Qty" type="text"></div>'
+				+	'<div class="col-xs-1" style="padding-left: 0;margin-left: -5px;line-height: 34px;"><button type="button" class="item-delete" onclick="deleteItem(' + (cnt + 1) + ')" style="color: #c9302c;"><i class="fa fa-times" aria-hidden="true"></i></button></div>'
+				+	'</div>'
+				+	'</div>';
+
+			$("#items").append(html);
+		});
+
+		$("#btn-submit").on("click", function(){
+			$("#loader-wrapper").show();
+
+			var itemNameArr = new Array();
+			var itemQtyArr = new Array();
+			var data = new Object();
+			data.name = $("input[name=name]").val();
+			data.date = $("input[name=date]").val();
+
+			$(".item").each(function(){
+				itemNameArr.push($(this).find("input[name=item-name]").val());
+				itemQtyArr.push($(this).find("input[name=qty]").val());
+			});
+
+			data.itemName = itemNameArr.join();
+			data.itemQty = itemQtyArr.join();
+
+			$.ajax({
+				url: "/admin/orders",
+				type: "post",
+				data: { params: data },
+				success: function(result){
+					if (result.status == 'success') {
+						$(".item-delete").parent().parent().parent().remove();
+						$("input[name=item-name]").val('');
+						$("input[name=qty]").val('');
+						window.location.href = '/admin/orders/successful/1';
+					}
+					$("#loader-wrapper").hide();
+				}
+			});
+		});
+	});
+
+	function deleteItem(id){
+		$("#item-" + id).remove();
+	}
+</script>
