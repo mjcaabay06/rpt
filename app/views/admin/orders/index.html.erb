@@ -64,7 +64,10 @@
         		<h4 class="modal-title">Order Items</h4>
      		</div>
       		<div class="modal-body" id="modalBodyItems">
-      			Body
+      		</div>
+      		<div class="modal-footer">
+      			<button class="btn btn-primary" type="button" id="btn-save">Print & Submit</button>
+      			<div class="clearfix"></div>
       		</div>
     	</div>
   	</div>
@@ -97,6 +100,37 @@
 			});
 
 			
+		});
+
+		$("#btn-save").on("click", function(){
+			var itemIdArr = new Array();
+			var itemPriceArr = new Array();
+			var itemTotalArr = new Array();
+			var data = new Object();
+
+
+			$(".order-item").each(function(){
+				var id = $(this).data('id');
+				itemIdArr.push(id);
+				itemPriceArr.push(parseFloat($("#item-" + id + " input[name=price]").val()));
+				itemTotalArr.push(parseFloat($("#total-" + id).html()));
+			});
+
+			data.ids = itemIdArr.join();
+			data.prices = itemPriceArr.join();
+			data.item_totals = itemTotalArr.join();
+			data.discount = $("#add-discount").val();
+			data.discounted_amount = $("#total-discount").html();
+			data.grand_total = $("#calculated-total strong").html();
+
+			$.ajax({
+				url: '',
+				type: 'post',
+				data: { params: data },
+				success: function(result){
+
+				}
+			});
 		});
 	});
 </script>

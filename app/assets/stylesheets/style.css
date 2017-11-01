@@ -1,6 +1,11 @@
 body{
 	font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif
 }
+
+.btn{
+  border-radius: 0;
+}
+
 .navbar{
 	border: none;
 	border-radius: 0;
