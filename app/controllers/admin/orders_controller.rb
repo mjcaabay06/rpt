@@ -33,8 +33,10 @@ class Admin::OrdersController < Admin::ApplicationController
 				end
 			end
 		rescue => error
-			puts "--------#{$!.backtrace}"
+			status = $!.message
 		end
+		
+
 		render json: { status: status }
 	end
 
