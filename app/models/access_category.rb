@@ -1,0 +1,2 @@
+class AccessCategory < ApplicationRecord
+end

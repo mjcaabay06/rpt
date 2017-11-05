@@ -5,6 +5,8 @@ Rails.application.routes.draw do
   	get 'login' => 'home#login'
 
   	resources :orders
+  	get '/orders/print/:id' => 'orders#print'
+  	post '/orders/print_submit' => 'orders#print_submit'
   	get '/orders/successful/:id' => 'orders#successful'
   	get '/get_order_items/:id' => 'orders#get_order_items'
   end

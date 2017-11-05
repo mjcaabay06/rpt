@@ -73,6 +73,7 @@
       		<div class="modal-body" id="modalBodyItems">
       		</div>
       		<div class="modal-footer">
+      			<input type="hidden" name="hidden-id">
       			<button class="btn btn-primary" type="button" id="btn-save">Print & Submit</button>
       			<div class="clearfix"></div>
       		</div>
@@ -100,6 +101,7 @@
 				url: "/admin/get_order_items/" + id,
 				type: "get",
 				success: function(result){
+					$("input[name=hidden-id]").val(id);
 					$("#modalBodyItems").html(result);
 					$("#modalOrderItems").modal("show");
 					$("#loader-wrapper").hide();
@@ -110,6 +112,8 @@
 		});
 
 		$("#btn-save").on("click", function(){
+			var id = $("input[name=hidden-id]").val();
+
 			var itemIdArr = new Array();
 			var itemPriceArr = new Array();
 			var itemTotalArr = new Array();
@@ -123,6 +127,7 @@
 				itemTotalArr.push(parseFloat($("#total-" + id).html()));
 			});
 
+			data.order_id = id;
 			data.ids = itemIdArr.join();
 			data.prices = itemPriceArr.join();
 			data.item_totals = itemTotalArr.join();
@@ -131,7 +136,7 @@
 			data.grand_total = $("#calculated-total strong").html();
 
 			$.ajax({
-				url: '',
+				url: '/admin/orders/print_submit',
 				type: 'post',
 				data: { params: data },
 				success: function(result){
