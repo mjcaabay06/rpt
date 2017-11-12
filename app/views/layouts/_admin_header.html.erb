@@ -10,34 +10,26 @@
 		</div>
 		<div class="collapse navbar-collapse" id="myNavbar">
 			<ul class="nav navbar-nav">
-				<li class="dropdown">
-					<a class="dropdown-toggle" data-toggle="dropdown" href="#">Projects <span class="caret"></span></a>
-					<ul class="dropdown-menu">
-						<li><a href="#">Page 1</a></li>
-						<li><a href="#">Page 2</a></li>
-						<li><a href="#">Page 3</a></li>
-					</ul>
-				</li>
-				<li class="dropdown">
-					<a class="dropdown-toggle" data-toggle="dropdown" href="#">Projects <span class="caret"></span></a>
-					<ul class="dropdown-menu">
-						<li><a href="#">Page 1</a></li>
-						<li><a href="#">Page 2</a></li>
-						<li><a href="#">Page 3</a></li>
-					</ul>
-				</li>
-				<li class="dropdown">
-					<a class="dropdown-toggle" data-toggle="dropdown" href="#">Projects <span class="caret"></span></a>
-					<ul class="dropdown-menu">
-						<li><a href="#">Page 1</a></li>
-						<li><a href="#">Page 2</a></li>
-						<li><a href="#">Page 3</a></li>
-					</ul>
-				</li>
-				<li><a href="#">Contact</a></li>
+				<% AccessCategory.select('distinct(access_categories.description), access_categories.id').joins('inner join accesses on accesses.access_category_id = access_categories.id inner join user_role_accesses on user_role_accesses.access_id = accesses.id').where("user_role_accesses.user_role_id = ?", @user.user_role_id).each do |ac| %>
+					<% access = Access.select('distinct(accesses.description), accesses.url').joins('inner join user_role_accesses on user_role_accesses.access_id = accesses.id').where('user_role_accesses.user_role_id = ? and accesses.access_category_id = ?', @user.user_role_id, ac.id) %>
+						<li class="dropdown">
+							<a class="dropdown-toggle" data-toggle="dropdown" href="#"><%= ac.description %> <% if access.present? %><span class="caret"></span><% end %></a>
+							<% if access.present? %>
+								<ul class="dropdown-menu">
+									<% access.each do |a| %>
+										<li><a href="<%= a.url %>"><%= a.description %></a></li>
+									<% end %>
+								</ul>
+							<% end %>
+						</li>
+				<% end %>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
-				<li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+				<li>
+					<% unless @user.blank? %>
+						<a href="/admin/logout"><span class="glyphicon glyphicon-log-in"></span> Logout</a>
+					<% end %>
+				</li>
 			</ul>
 		</div>
 	</div>

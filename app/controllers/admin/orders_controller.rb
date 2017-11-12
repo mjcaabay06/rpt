@@ -1,4 +1,5 @@
 class Admin::OrdersController < Admin::ApplicationController
+	before_action :check_access!, only: [:index], except: [:successful]
 
 	def index
 		@orders = Order.order("order_date desc").paginate(:per_page => 10, :page => params[:page])
