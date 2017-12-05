@@ -117,6 +117,7 @@
 			var itemIdArr = new Array();
 			var itemPriceArr = new Array();
 			var itemTotalArr = new Array();
+			var itemStatus = new Array();
 			var data = new Object();
 
 
@@ -125,12 +126,14 @@
 				itemIdArr.push(id);
 				itemPriceArr.push(parseFloat($("#item-" + id + " input[name=price]").val()));
 				itemTotalArr.push(parseFloat($("#total-" + id).html()));
+				itemStatus.push($("#check-" + id).is(":checked") ? 1 : 2);
 			});
 
 			data.order_id = id;
 			data.ids = itemIdArr.join();
 			data.prices = itemPriceArr.join();
 			data.item_totals = itemTotalArr.join();
+			data.statuses = itemStatus.join();
 			data.discount = $("#add-discount").val();
 			data.discounted_amount = $("#total-discount").html();
 			data.grand_total = $("#calculated-total strong").html();
