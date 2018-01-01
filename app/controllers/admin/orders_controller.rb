@@ -18,7 +18,6 @@ class Admin::OrdersController < Admin::ApplicationController
 		orderDate = param[:date]
 		itemName = param[:itemName].to_s.split(',')
 		itemQty = param[:itemQty].to_s.split(',')
-
 		
 		order = Order.new(name: clientName, order_date: orderDate, user_id: 1, order_status_id: 1)
 
@@ -26,7 +25,7 @@ class Admin::OrdersController < Admin::ApplicationController
 			orderId = order.id
 
 			for i in 0..itemName.length - 1
-				data << { order_id: orderId, item: itemName[i].to_s, quantity: itemQty[i], status: 2 }
+				data << { order_id: orderId, item: itemName[i].to_s, quantity: itemQty[i], status_id: 2 }
 			end
 
 			orderItem = OrderItem.create!([ data ])
@@ -83,5 +82,35 @@ class Admin::OrdersController < Admin::ApplicationController
 	end
 
 	def print
+		@order = Order.find(params[:id])
+		@orders =  OrderItem.joins(:order).where("orders.id = ? and order_items.status_id = 1", params[:id])
+		respond_to do |format|
+			format.html { render action: "print", layout: false }
+		end
+	end
+
+	def order_collected
+		@orders = Order.where('order_status_id = 1').order("order_date desc").paginate(:per_page => 10, :page => params[:page])
+	end
+
+	def order_prepared
+		@orders = Order.where('order_status_id = 2').order("order_date desc").paginate(:per_page => 10, :page => params[:page])
+	end
+
+	def get_order_prepared
+		@orderItem = OrderItem.where("order_id = ?", params[:id]).order("id")
+		@order = Order.find(params[:id])
+
+		respond_to do |format|
+			format.html { render action: "_order_item_prepared", layout: false }
+		end
+	end
+
+	def order_shipped
+		@orders = Order.where('order_status_id = 3').order("order_date desc").paginate(:per_page => 10, :page => params[:page])
+	end
+
+	def order_delivered
+		@orders = Order.where('order_status_id = 4').order("order_date desc").paginate(:per_page => 10, :page => params[:page])
 	end
 end

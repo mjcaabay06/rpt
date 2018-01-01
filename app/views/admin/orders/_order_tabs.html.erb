@@ -1,0 +1,25 @@
+<% url_trim = request.fullpath.split('/admin/')[1].split('?')[0] %>
+
+<ul class="nav nav-tabs" role="tablist">
+	<li <%= 'class=active' if url_trim == "orders" %>>
+		<a  href="#all" role="tab" data-toggle="tab" onclick="goToTab('orders')">All</a>
+	</li>
+	<li <%= 'class=active' if url_trim == "order-collected" %>>
+		<a href="#collected" role="tab" data-toggle="tab" onclick="goToTab('order-collected')">Collected</a>
+	</li>
+	<li <%= 'class=active' if url_trim == "order-prepared" %>>
+		<a href="#prepared" role="tab" data-toggle="tab" onclick="goToTab('order-prepared')">Prepared</a>
+	</li>
+	<li class="hidden" <%= 'class=active' if url_trim == "order-shipped" %>>
+		<a href="#shipped" role="tab" data-toggle="tab" onclick="goToTab('order-shipped')">Shipped</a>
+	</li>
+	<li class="hidden" <%= 'class=active' if url_trim == "order-delivered" %>>
+		<a href="#delivered" role="tab" data-toggle="tab" onclick="goToTab('order-delivered')">Delivered</a>
+	</li>
+</ul>
+
+<script type="text/javascript">
+	function goToTab(url) {
+		window.location = url + location.search
+	}
+</script>

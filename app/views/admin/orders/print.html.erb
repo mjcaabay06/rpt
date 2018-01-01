@@ -1,1 +1,142 @@
-<h1>Print</h1>
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Order Receipt</title>
+		<meta name="description" content="Free Web tutorials on HTML and CSS">
+		<meta name="author" content="Paramount Life & General Insurance Corporation">
+		<%= stylesheet_link_tag "application", :media => "print, screen, projection" %>
+		<%= javascript_include_tag "application", :media => "print, screen, projection" %>
+		<style type="text/css" media="print, screen, projection">
+			body{
+				background-color: rgba(50,50,50,1)
+			}
+			div[size="A6"] {
+				background: white;
+				width: 4in;
+				height: 6in;
+				/*height: auto;*/
+				display: block;
+				margin: 0 auto;
+				margin-bottom: 0.5cm;
+				box-shadow: 0 0 0.5cm rgba(0,0,0,0.5);
+				padding: 0.5cm 0.3cm;
+			}
+			.borderless{
+				font-size: 10px;
+			}
+			.borderless td{
+				border: 0 !important;
+				padding: 0 5px !important;
+			}
+			.borderless td.b{
+				padding-bottom: 10px !important;
+			}
+			.borderless > thead > tr > th{
+				border: 0;
+			}
+			.borderless > thead{
+				border-top: 1px dashed;
+				border-bottom: 1px dashed;
+			}
+			
+			@media print {
+			  body, div[size="A6"] {
+			    margin: 0;
+			    box-shadow: 0;
+			  }
+				@page {
+						size: auto Letter portrait;
+						margin: 3mm;
+				    @bottom {
+				    	/*padding-right:20px;*/
+				        content: "Page " counter(page) " of " counter(pages);
+				    }
+				}
+				.pagebreak {
+					page-break-before: always;
+				}
+			}
+			.pagebreak {
+				page-break-before: always;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-10 col-md-offset-1" style="margin-top: 50px; margin-bottom: 50px;">
+					<div class="" size="A6">
+						<div class="col-sm-8">
+							<div class="row">
+								Name: <%= @order.name %>
+							</div>
+						</div>
+						<div class="col-sm-4">
+							<div class="row">
+								Date: <%= @order.order_date.blank? ? '' : @order.order_date.strftime("%m/%d/%Y") %>
+							</div>
+						</div>
+						<div class="clearfix"></div>
+
+						<div style="border-bottom: 1px dashed #000; margin-top: 30px;">
+							<div class="col-sm-4">
+								<div class="row text-center">Item</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="row text-right">SRP</div>
+							</div>
+							<div class="col-sm-2">
+								<div class="row text-right">Qty</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="row text-right">Total</div>
+							</div>
+							<div class="clearfix"></div>
+						</div>
+
+						<% OrderItem.where("order_id = ? and status_id = 1", @order.id).all.order("item").each do |item| %>
+							<div style="padding: 5px 0">
+								<div class="col-sm-4">
+									<div class="row"><%= item.item %></div>
+								</div>
+								<div class="col-sm-3">
+									<div class="row text-right"><%= item.item_amount %></div>
+								</div>
+								<div class="col-sm-2">
+									<div class="row text-right"><%= item.quantity %></div>
+								</div>
+								<div class="col-sm-3">
+									<div class="row text-right"><%= item.amount %></div>
+								</div>
+								<div class="clearfix"></div>
+							</div>
+						<% end %>
+						<div style="border-top: 1px dashed #000">
+							<div style="margin-top: 10px" class="<%= @order.discount > 0 ? '' : 'hidden' %>">
+								<div class="col-sm-7">
+									<div class="row text-right"><i>Discount</i></div>
+								</div>
+								<div class="col-sm-2">
+									<div class="row text-right"><%= "-" + @order.discount.to_s %></div>
+								</div>
+								<div class="col-sm-3">
+									<div class="row text-right"><%= @order.discounted_amount %></div>
+								</div>
+								<div class="clearfix"></div>
+							</div>
+							<div style="margin-top: 10px">
+								<div class="col-sm-6">
+									<div class="row"><strong>TOTAL</strong></div>
+								</div>
+								<div class="col-sm-6">
+									<div class="row text-right"><strong><%= @order.grand_total %></strong></div>
+								</div>
+								<div class="clearfix"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
